@@ -1,7 +1,8 @@
 <template>
   <div class="index">
-<div>6666666666666666666666</div>
+
     <div class="header">
+      <!-- 就首页有这个头部，所以不需要封装 -->
       <div class="h-left">
         <span class="iconfont iconnew"></span>
       </div>
@@ -17,7 +18,10 @@
     <!-- v-for="cate in item.artcleList" :key='item.id' -->
     <div class="taps">
       <van-tabs v-model="active" sticky swipeable>
-        <van-tab :title="item.name" v-for="(item,index) in categoryList" :key="index">
+        <van-tab :title="item.name" v-for="(item,ix) in categoryList" :key="ix +'1'">
+          <!-- item.loading是每个栏目的加载，不受其他的影响 -->
+                <!-- :immediate-check="false"默认加载数据，不用全部都加载出来，改为false，因为我们要自己刷新加载 -->
+                <!-- offset滑动的间距，加载数据 -->
           <van-list
             v-model="item.loading"
             :finished="item.finished"
@@ -71,7 +75,7 @@ export default {
     }
 
     // console.log(res)
-    // 数据改造必须在外面，因为不管是if还是else都有 this.categoryList可以进行数据改造
+    // 数据改造必须在外面，因为不管是if有本地储存还是else没有本地储存，都有 this.categoryList可以进行数据改造
     // ========================不懂看下面这句话===================
 
     // 在这里进行数据改造也是没有问题的，如果全部else里面的话，那么就是说明，有本地储存，就没有获取到文章的数据
@@ -82,6 +86,7 @@ export default {
         artcleList: [],
         pageIndex: 1,
         pageSize: 6,
+        // 这是上拉和下拉的数据改造，后面才添加进来的
         loading: false, // loading为false的时候，就是显示加载中。。。为true的时候就是可以加载数据，发起请求数据
         finished: false,
         isLoading: false
@@ -114,24 +119,31 @@ export default {
     },
     // 下拉刷新
     onRefresh () {
+      // this.active是索引 当前激活项s
       this.categoryList[this.active].pageIndex = 1
+      // 刷新完， 让上拉加载重新启用  finished是下拉加载的属性
       this.categoryList[this.active].finished = false
+      // 刷新： 清除数组的所有数据，然后再从新加载数据
+      this.categoryList[this.active].artcleList.length = 0
+      // 清除数组的所有数据，然后再从新加载数据
+      this.postLists()
+      // setTimeout(() => {
 
-      setTimeout(() => {
-        this.categoryList[this.active].artcleList.length = 0
-        this.postLists()
-      }, 2000)
+      // }, 2000)
 
       // this.categoryList[this.active].isLoading = true
     },
+    // 下拉加载  和下拉加载要连在一起做
     onLoad () {
       // this.categoryList[this.active].finished = true
       this.categoryList[this.active].pageIndex++
       // 上拉加载数据
+      // this.postLists()
       setTimeout(() => {
         this.postLists()
-      }, 3000)
+      }, 1000)
     },
+    // 这是封装的一个方法postLists ()
     async postLists () {
       // 获取文章列表数据
       let res1 = await postList({
@@ -144,15 +156,17 @@ export default {
       res1.data.data.map(v => {
         for (var i = 0; i < v.cover.length; i++) {
           // console.log(i)  i代表索引  0，1，2
-
+          // 因为返回的v.cover[i].url有两种情况，有以https://开头的，也有其他的
           v.cover[i].url = v.cover[i].url.indexOf('https://') ? v.cover[i].url : localStorage.getItem('mybaseURL') + v.cover[i].url
         }
       })
 
+      // list为3个状态，有loading=true，就是可以加载，loading=false是本次加载结束，继续可以往下拉，可以继续加载，为finished证明加载完成了，不可以继续往下拉了
       // 需要把数据解构了再添加到数组，不是直接赋值，因为下一次操作这个数组的时候，会出现问题，
       this.categoryList[this.active].artcleList.push(...res1.data.data)
       // 加载完成状态改为false,可以继续加载
       this.categoryList[this.active].loading = false
+      //  刷新完了，让 isLoading 为false可以继续加载
       this.categoryList[this.active].isLoading = false
       // 加载到的数据小于当前页面可显示的条数，====判断数据是否加载完成
       if (res1.data.data.length < this.categoryList[this.active].pageSize) {
@@ -161,13 +175,13 @@ export default {
     }
   },
 
-  // 获取b不同的栏目数据，可以调用tap栏目组件的Change事件，也可以用watch监听active的变化来实现切换页面内容的变化
+  // 获取不同的栏目数据，可以调用tap栏目组件的Change事件，也可以用watch监听active的变化来实现切换页面内容的变化
   watch: {
     active () {
       // active为当前激活项
       // active变化了，页面也会变化。 从这里可以看出this.categoryList[this.active]
       // active这个变量很重要
-      // console.log(this.active) 可以打印出来看一下需要监听的变量
+      console.log(this.active) // 可以打印出来看一下需要监听的变量
       this.postLists()
     }
   }

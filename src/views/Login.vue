@@ -9,7 +9,7 @@
           <span class="iconfont iconnew"></span>
         </div>
         <div class="inputs">
-          <hminput placeholder="请输入用户名/手机号码" msg_err="用户名不规范" v-model="users.username"  type="text" :rules="/^1\d{10}$/"></hminput>
+          <hminput placeholder="请输入用户名/手机号码" msg_err="用户名不规范" v-model="users.username"  type="text" :rules="/^1\d{5}$/"></hminput>
           <!-- <hminput placeholder="请输入用户名" :value="users.username" @input="handleinputs"></hminput> -->
           <br />
       <hminput placeholder="请输入密码" type="password" msg_err="密码不能为空"  v-model="users.password"></hminput>
@@ -39,7 +39,7 @@ export default {
     return {
       users: {
         username: '100861',
-        password: '123'
+        password: '000000'
       }
     }
   },

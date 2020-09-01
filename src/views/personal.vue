@@ -17,7 +17,7 @@
           <mycell text="我的收藏" text2="文章/视频" @cellclick='mystar'></mycell>
           <mycell text="设置"></mycell>
       </div>
-      <div class="btn2"><hmbtn text="退出"></hmbtn></div>
+      <div class="btn2" @click="tuichu"><hmbtn text="退出" ></hmbtn></div>
 
   </div>
 </template>
@@ -36,6 +36,13 @@ export default {
     }
   },
   methods: {
+    tuichu () {
+      console.log(222)
+
+      localStorage.removeItem('mytoken')
+      localStorage.removeItem('mybaseURL')
+      this.$router.push({ name: 'login' })
+    },
     handlefoluu () {
       this.$router.push({ name: 'myfollows' })
     },

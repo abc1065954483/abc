@@ -23,6 +23,7 @@ export default {
     }
   },
   mounted () {
+    // 这个是一加载的时候获取底线的状态，为真
     this.status = !!this.value
   },
   methods: {
@@ -43,9 +44,11 @@ export default {
         }
       }
     },
-    handleinput (event) {
+    // 这个是在父子组件间的双向绑定
+    // 这个是在输入值的时候验证，底部线颜色的变化
+    handleinput (event) { // 这里是实现双向绑定的操作
       let value = event.target.value
-      this.$emit('input', value)
+      this.$emit('input', value) // input为事件时，在父组件那边可以用v-model来双向绑定
       if (this.rules) {
         if (this.rules && this.rules.test(value)) {
           this.status = true

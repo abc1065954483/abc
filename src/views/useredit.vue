@@ -75,6 +75,7 @@ export default {
     // 退出
     hanglebtn () {
       console.log(2)
+      console.log(11)
       localStorage.removeItem('mytoken')
       localStorage.removeItem('mybaseURL')
       this.$router.push({ name: 'login' })

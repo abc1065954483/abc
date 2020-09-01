@@ -1,4 +1,4 @@
-import axios from '@/untils/myaxios.js'// 这里已经处理好基地址和请头的判断了
+import axios from '@/untils/myaxios.js'// 这里已经处理好基地址和请求头的判断了
 // 1获取文章栏目信息
 export const categoryList = () => {
   return axios({

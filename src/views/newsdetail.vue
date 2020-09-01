@@ -6,6 +6,7 @@
         <van-icon name="arrow-left back" @click="$router.back()" />
         <span class="iconfont iconnew new"></span>
       </div>
+      <!-- active是颜色的激活项 -->
       <span @click="handleclick" :class="{active:detailList.has_follow}">{{detailList.has_follow ? '已关注' : '关注'}}</span>
     </div>
     <!-- 详情 -->
@@ -117,6 +118,7 @@ export default {
       console.log(res1)
       if (res1.status === 200) {
         this.commentsList = res1.data.data.map(v => {
+          // 数据改造，映射
           v.user.head_img = localStorage.getItem('mybaseURL') + v.user.head_img
           return v
         })

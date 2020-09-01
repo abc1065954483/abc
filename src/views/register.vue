@@ -48,6 +48,7 @@ export default {
     }
   },
   methods: {
+    // 因为最后要点击确定按钮，发起请求，需要获取到input的值，所以需要子传父
     async hangleregister () {
       console.log(this.users)
 
